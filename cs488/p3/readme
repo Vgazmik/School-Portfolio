@@ -1,0 +1,34 @@
+Course: CS488
+Author: Shane Lopez
+Project: #3, Lighting
+
+
+The object of this assignment was to render a lit scene
+depicting at minimum 3 walls and two silver spheres. 
+Walls and spheres were rendered using GL_QUADS and 
+glutSolidSphere,and lighting and shading were achieved 
+using OpenGL's lighting and shading functions, which 
+were not expressly forbidden. 
+
+In addition to the above requirements, I have taken the
+liberty of adding some camera panning and viewer motion
+controls, layed out as such:
+
+
+Viewer Motion (PRP)
+-----------------------*
+I: Move Forward  (-Z)  *
+K: Move Backward (+Z)  *
+J: Move Left     (-X)  *
+L: Move Right    (+X)  *
+************************
+Camera Pan (VRP)        }---> Space Bar: Snap To Origin
+-----------------------*
+W: Pan Up        (+Y)  *
+S: Pan Down      (-Y)  *
+A: Pan Left      (-X)  *
+D: Pan Right     (+X)  *
+************************
+
+These keys are meant to give the viewer some control over 
+the scene, allowing them to "walk through" the hall.

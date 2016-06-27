@@ -1,0 +1,2 @@
+look: p3.cpp
+	g++ -o look p3.cpp -lglut -lGL -lGLU

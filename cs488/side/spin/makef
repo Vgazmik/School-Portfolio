@@ -1,0 +1,2 @@
+prac: practice.cpp
+	g++ -o prac practice.cpp -lglut -lGL -lGLU

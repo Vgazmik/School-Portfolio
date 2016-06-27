@@ -1,0 +1,227 @@
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+
+#ifdef WIN32
+ #define WINDOWS
+#elif WIN64
+ #define WINDOWS
+#endif
+#ifdef WINDOWS
+  #include <windows.h>  // Without include this header in Windows, you will get error 
+			// C2381: 'exit' : redefinition; __declspec(noreturn) differs
+#endif
+
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+/**********************/
+#include <GL/glut.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <vector>
+#include<iostream>//
+#define ZC 0
+#define ZF 110
+#define XM 400
+/**********************/
+using namespace std;
+enum face{BL = 0, TL = 1, TR = 2, BR = 3};
+//enum lines{LV = 0, RV = 1, BH = 2, TH = 3};
+enum dir{L = 0, R = 1, U = 2, D = 3};
+
+float eyeZ = 0.0f;
+float eyeX = 0.0f;
+float cX = 0.0f;
+float cY = 0.0f;
+
+//Light 
+GLfloat amb_mat[]  = {1.0f, 1.0f, 1.0f, 1.0f};
+
+GLfloat  mat[4];
+
+GLfloat rrAmb[4] = {0.35, 0.06, 0.02};//0.05, 0.0, 0.0};
+GLfloat rrDif[4] = {0.82, 0.2, 0.1};//0.5, 0.4, 0.4};
+GLfloat rrSpc[4] = {0.1, 0.1, 0.1};//0.7, 0.04, 0.04};
+
+GLfloat grAmb[4] = {0.35, 0.06, 0.02};//0.0, 0.05, 0.0};
+GLfloat grDif[4] = {0.521, 0.72, 0.2};//0.4, 0.5, 0.4};
+GLfloat grSpc[4] = {0.1, 0.1, 0.1};//0.04, 0.7, 0.04};
+
+GLfloat bAmb[4] = {0.35, 0.06, 0.02};
+GLfloat bDif[4] = {0.1, 0.2, 0.8};
+GLfloat bSpc[4] = {0.1, 0.1, 0.1};
+
+
+GLfloat sAmb[4] = {0.231, 0.231, 0.231};//0.19225, 0.19225, 0.19225};
+GLfloat sDif[4] = {0.278, 0.278, 0.278};//0.50754, 0.50754, 0.50754};
+GLfloat sSpc[4] = {0.774, 0.774, 0.774};//0.508273, 0.508273, 0.508273};
+GLfloat shine[] = {89.6};//0.4*128.0}; // silver sphere
+	
+GLfloat shiny[] = {5.0};//0.078125*128.0}; // walls
+GLfloat amb[]  = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat diff[] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat spec[] = {1.0f, 1.0f, 1.0f, 1.0f};
+	
+GLfloat lP[] = {0.0, 40.0, -5.0, 1.0};
+
+bool kS[4]; //for camera pan
+bool mS[4]; //for "movement"
+
+struct pt{
+	float x,y,z;
+};
+
+/*struct line {
+	pt a,b;
+};*/
+
+struct quad {
+	pt pts[4];
+};
+
+/*int angle = 0;
+
+int dist(pt a, pt b) {
+	float ret;
+	float dx,dy,dz;
+	
+	dx = b.x-a.x;
+	dy = b.y-a.y;
+	dz = b.z-a.z;
+	
+	ret = sqrt((pow(dx,2.0) + pow(dy,2.0), pow(dz,2.0)));
+	
+	return ret;
+}
+
+void checker(pt lc, pt lf, pt rc, pt rf) {
+	float factor = 4;
+	float inc = 0.1;
+	float t[4] = {0,0,0,0};
+	//int cutH = dist(rf,rc) / factor;
+	//int cutF = dist(rc,lc) / factor;
+	line lv,bh,rv,th; 
+	float ldx,ldy,ldz,bdx,bdy,bdz,rdx,rdy,rdz;
+	float tdx,tdy,tdz;
+	pt hold,h2,tmp;
+        quad Q; // = {bl,tl,tr,br}, ^, >, v, <
+	vector<quad> tiles;
+	
+      //     lf b--------------- rf
+      //       /^              /^
+      //      /lv             /rv
+      //     / v             / v
+      // lc /a___<-bh->____b/ rc
+	
+	lv.a = lc; lv.b = lf; //Define lines lv,bh,rv
+	bh.a = lc; bh.b = rc;
+	rv.a = rc; rv.b = rf;
+	
+	ldx = lv.b.x - lv.a.x; //Define coefficients 
+	ldy = lv.b.y - lv.a.y; //for parametric form
+	ldz = lv.b.z - lv.a.z; //of line
+	
+	rdx = rv.b.x - rv.a.x; //also rv
+	rdy = rv.b.y - rv.a.y;
+	rdz = rv.b.z - rv.a.z;
+	
+	bdx = bh.b.x - bh.a.x; //This line will be
+	bdy = bh.b.y - bh.a.y; //updated
+	bdz = bh.b.z - bh.a.z;
+	
+	Q.pts[BL] = lv.a; //starting position
+	
+	//calculate tl,tr,br
+	//
+	//first advance along lv,rv
+	//lv for TL
+	t[LV] = (dist(lv.a,lv.b)/factor)/inc; //won't change
+	
+	hold.x = Q.pts[BL].x + ldx*t[LV]; 
+	hold.y = Q.pts[BL].y + ldy*t[LV]; 
+	hold.z = Q.pts[BL].z + ldz*t[LV];
+	
+	Q.pts[TL] = hold;
+	
+	//now advance along rv
+	t[RV] = (dist(rv.a,rv.b)/factor)/inc; //won't change
+	
+	hold.x = rc.x + rdx*t[RV]; 
+	hold.y = rc.y + rdy*t[RV]; 
+	hold.z = rc.z + rdz*t[RV];	  
+	//keep hold to make line to TL
+	th.a = Q.pts[TL]; 
+	th.b = hold;     
+	                 
+	tdx = th.b.x - th.a.x;
+	tdy = th.b.y - th.a.y;
+	tdz = th.b.z - th.a.z;
+	//solve for TR
+	t[TH] = (dist(Q.pts[TL],hold)/factor)/inc;
+	
+	h2.x = Q.pts[TL].x + tdx*t[TH];
+	h2.y = Q.pts[TL].y + tdy*t[TH];
+	h2.z = Q.pts[TL].z + tdz*t[TH];
+	
+	Q.pts[TR] = h2;
+	
+	//finally, calculate BR
+	t[BH] = (dist(bh.a,bh.b)/factor)/inc;
+	
+	h2.x = Q.pts[BL].x + bdx*t[BH];
+	h2.y = Q.pts[BL].y + bdy*t[BH];
+	h2.z = Q.pts[BL].z + bdz*t[BH];
+	
+	Q.pts[BR] = h2;
+	
+	tiles.push_back(Q);
+	
+	for(int j = 0; j < tiles.size(); j++) {
+		Q = tiles[j];
+		
+		glBegin(GL_QUADS);
+	 	  if(j%2 == 0)
+		  	glColor3f(20.0f, 0.0f, 0.0f);
+		  else
+		  	glColor3f(1.0f, 20.0f, 1.0f);
+		  tmp = Q.pts[BL];*/
+		  /*cout << "\nBL-  x: " 
+		       << tmp.x  
+		       << "\ty: " 
+		       << tmp.y  
+		       << "\tz: " 
+		       << tmp.z  
+		       << endl;*/
+	  	  //glVertex3f(tmp.x,tmp.y,tmp.z); // BL
+	  	  //tmp = Q.pts[TL];
+		  /*cout << "\nTL-  x: " 
+		       << tmp.x  
+		       << "\ty: " 
+		       << tmp.y  
+		       << "\tz: " 
+		       << tmp.z  
+		       << endl;*/
+	  	  //glVertex3f(tmp.x,tmp.y,tmp.z); // TL
+	  	  //tmp = Q.pts[TR];
+		  /*cout << "\nTR-  x: " 
+		       << tmp.x  
+		       << "\ty: " 
+		       << tmp.y  
+		       << "\tz: " 
+		       << tmp.z  
+		       << endl;*/
+	  	  //glVertex3f(tmp.x,tmp.y,tmp.z); // TR
+	  	  //tmp = Q.pts[BR];
+		  /*cout << "\nBR-  x: " 
+		       << tmp.x  
+		       << "\ty: " 
+		       << tmp.y  
+		       << "\tz: " 
+		       << tmp.z  
+		       << endl;*/
+	  	  //glVertex3f(tmp.x,tmp.y,tmp.z); // BR
+		//glEnd();
+	//}
+//}

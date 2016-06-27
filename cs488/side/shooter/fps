@@ -1,0 +1,2 @@
+view: fps.cpp
+	g++ -o view fps.cpp -lglut -lGL -lGLU

@@ -1,0 +1,375 @@
+/*Author: Chihua Ma
+ *
+ * Date: Sep 1st, 2012
+ *
+ * Operating System: Windows 7 64-bit
+ * Compiler: Visual Studio 2010
+ *
+ * Press key 's' to display square, and key 't' to display triangle
+ */
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#include "pt.h"
+
+#ifdef WIN32
+ #define WINDOWS
+#elif WIN64
+ #define WINDOWS
+#endif
+#ifdef WINDOWS
+  #include <windows.h>  // Without include this header in Windows, you will get error C2381: 'exit' : redefinition; __declspec(noreturn) differs
+#endif
+
+
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+/* Intialization of the sign of drawing graphics */
+bool drawSquare = true;
+bool drawTriangle = false;
+
+/******************************************************************/
+
+/* output code by Mark Kilgard */
+void output(int x, int y, char *string)
+{
+	int len, i;
+	glRasterPos2f(x, y);
+	len = (int) strlen(string);
+	for (i = 0; i < len; i++) 
+	{
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, string[i]);
+	}
+}
+
+void Keyboard(unsigned char key, int x, int y)
+{
+	//cout<<key<<endl;
+	switch (key)
+	{
+		case 27:       //ESCAPE key
+			exit(0);
+			break;
+
+		case 's':      // Draw Square
+			drawSquare = true;
+			drawTriangle = false;
+			break;
+
+		case 't':      // Draw Triangle
+			drawSquare = false;
+			drawTriangle = true;
+			break;		
+	}
+}
+/*******************************************************************/
+void line(pt a, pt b) {
+	int dx = b.x - a.x;
+	int dy = b.y - a.y;
+	int d = 2 * dy - dx;
+	int incrE = 2*dy;
+	int incrNE = 2 * (dy - dx);
+	int incrSE = 2 * (dy + dx);
+	int x = a.x;
+	int y = a.y;
+	bool ENE = true;
+	bool UD = false;
+	bool SE = false;
+	
+	if((x == b.x) && (y == b.y))
+		return;
+	
+	if(x == b.x) {
+		ENE = false;
+		UD = true;
+	}
+	if((x < b.x) && (y > b.y)) {
+		ENE = false;
+		SE = true;
+	}
+
+	if(UD) {
+
+		glBegin(GL_POINTS);
+		
+		glVertex2f((float)x,(float)y);
+		if(y < b.y) {
+			y++;
+			while(y < b.y) {
+				glVertex2f((float)x,(float)y);
+				y++;	
+			}
+		}
+		else{
+			y--;
+			while(y > b.y) {
+				glVertex2f((float)x,(float)y);
+				y--;	
+			}
+		}
+		
+		glEnd();
+		return;
+	}
+	else if(ENE) {
+		glBegin(GL_POINTS);
+		
+		glVertex2f((float)x,(float)y);
+		while(x < b.x) {
+			if(d <= 0) {
+				d+=incrE;
+				x++;
+			}	
+			else {
+				d+=incrNE;
+				x++;
+				y++;
+			}
+
+			glVertex2f((float)x,(float)y);
+		}
+		
+		glEnd();
+		return;
+	}
+	else if (SE) {
+		d = 2 * dy + dx;
+		glBegin(GL_POINTS);
+		
+		glVertex2f((float)x,(float)y);		
+		while(x < b.x) {
+			if(d <= 0) {
+				d+=incrSE;
+				x++;
+				y--;
+			}
+			else {
+				d+=incrE;
+				x++;
+				//y--;
+			}
+			
+			glVertex2f((float)x,(float)y);
+		}
+
+		glEnd();
+		return;
+	}
+	else return;
+
+}
+
+/*******************************************************************/
+void circlePoints(pt start) {
+	float x = (float)start.x;
+	float y = (float)start.y;
+	
+	glBegin(GL_POINTS);
+	glVertex2f(x,y);
+	glVertex2f(x,-y);
+	glVertex2f(-x,y);
+	glVertex2f(-x,-y);
+	glVertex2f(y,x);
+	glVertex2f(y,-x);
+	glVertex2f(-y,x);
+	glVertex2f(-y,-x);
+	glEnd();
+}
+
+void circleSegment(int radius) {
+	int x = 0;
+	int y = radius;
+	pt origin = pt(x,radius);
+	double d = 5.0 / 4.0 - radius;
+	circlePoints(origin);
+	pt a;
+
+	while(y > x) {
+		if(d < 0)
+			d+= 2.0 * x + 3.0;
+		else {
+			d+= 2.0 * (x - y) + 5.0;
+			y--;
+		}
+		x++;
+		a.setXY(x,y);
+		circlePoints(a);
+	}
+}
+
+void name(pt start) {
+	int x = start.x;
+	int y = start.y;
+	int dE = 10.0;
+	int dS = 5.0;
+	
+	/*
+		____ _  _  _  _  _ ____
+		|___ |__| /_\ |\ | |___
+		____||  |/   \| \| |___
+
+	*/
+	glBegin(GL_POINTS);
+	//Draw 'S'
+	pt a = pt(x,y);//top left
+	pt b = pt((x+dE),y);//top right
+	pt c = pt(x,(y-dE));//middle left
+	pt d = pt((x+dE),(y-dE));//middle right
+	pt e = pt(x,(y-(2*dE)));//bottom left
+	pt f = pt((x+dE),(y-(2*dE)));//bottom right
+	
+	line(a,b);
+	line(a,c);
+	line(c,d);
+	line(d,f);
+	line(e,f);
+	//increment x for ease
+	x = x+dE+dS;
+	//Draw 'H'
+	pt g = pt(x,y);//TL
+	pt h = pt((x+dE),y);//TR
+	pt i = pt(x,(y-dE));//ML
+	pt j = pt((x+dE),(y-dE));//MR
+	pt k = pt(x,(y-(2*dE)));//BL
+	pt l = pt((x+dE),(y-(2*dE)));//BR
+	
+	line(g,i);
+	line(i,j);
+	line(i,k);
+	line(h,j);
+	line(j,l);
+	//increment x
+	x = x+dE+dS;
+	//Draw 'A'
+	pt m = pt(x,(y-(2*dE)));
+	pt n = pt(x,(y-dE));
+	pt o = pt((x+(dE/2)),y);
+	pt p = pt((x+dE),(y-dE));
+	pt q = pt((x+dE),(y-(2*dE)));
+
+	line(m,n);
+	line(n,o);
+	line(n,p);
+	line(o,p);
+	line(p,q);
+	
+	
+	glEnd();
+}
+
+/******************************************************************/
+
+void display(void) {
+	/* clear the screen to the clear colour */
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	// draw a red square
+    if (drawSquare == true) {
+		glColor3f(1.0,0.0,0.0);
+		/*glBegin(GL_POLYGON); // in the first lab assignment, you can only use GL_POINT
+		  glVertex2f(200.0, 200.0);
+		  glVertex2f(200.0, 300.0);
+		  glVertex2f(300.0, 300.0);
+		  glVertex2f(300.0, 200.0);
+		glEnd();*/
+
+		pt n = pt(100,100);
+		pt o = pt(105,110);
+
+		line(n,o);
+
+		pt s = pt(300,300);
+		name(s);
+		
+		pt a = pt(100,100);
+		pt b = pt(200,200);
+		pt c = pt(400,100);
+		pt d = pt(200,50);
+
+		line(a,b);
+		line(a,c);
+		line(b,c);
+		//line(a,d);
+		circleSegment(150);		
+
+		glColor3f(1.0, 1.0, 1.0);
+		output(200,150,"Square");
+	}
+
+	// draw a triangle with a white, red, and blue corner
+	if (drawTriangle == true) {
+		glBegin(GL_POLYGON);
+		  glColor3f(1.0, 1.0, 1.0);
+		  glVertex2f(180, 220);
+		  glColor3f(1.0, 0.0, 0.0);
+		  glVertex2f(280, 400);
+		  glColor3f(0.0, 0.0, 1.0);
+		  glVertex2f(300, 200);
+		glEnd();
+
+		glColor3f(1.0, 1.0, 1.0);
+		output(200,150,"Triangle");
+	}
+
+    /* swap buffers */
+    glutSwapBuffers();
+}
+
+void reshape (int w, int h) {
+	/* set the viewport */
+	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
+
+	/* Matrix for projection transformation */
+	glMatrixMode (GL_PROJECTION); 
+
+	/* replaces the current matrix with the identity matrix */
+	glLoadIdentity ();
+
+	/* Define a 2d orthographic projection matrix */
+	gluOrtho2D (0.0, (GLdouble) w, 0.0, (GLdouble) h);
+}
+
+/*******************************************************************/
+
+int main(int argc, char** argv) {
+
+	/* deal with any GLUT command Line options */
+    glutInit(&argc, argv);
+
+	/* create an output window */
+    glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB);
+	glutInitWindowSize(500, 500);
+
+	/* set the name of the window and try to create it */
+    glutCreateWindow("CS 488 - Sample");
+
+	/* specify clear values for the color buffers */
+	glClearColor (0.0, 0.0, 0.0, 1.0);
+
+    /* Receive keyboard inputs */
+    glutKeyboardFunc (Keyboard);
+
+    /* assign the display function */
+    glutDisplayFunc(display);
+
+	/* assign the idle function */
+    glutIdleFunc(display);
+
+    /* sets the reshape callback for the current window */
+	glutReshapeFunc(reshape);
+
+    /* enters the GLUT event processing loop */
+    glutMainLoop();
+
+    return (EXIT_SUCCESS);
+}
+
+

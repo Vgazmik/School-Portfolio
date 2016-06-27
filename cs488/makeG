@@ -1,0 +1,2 @@
+P1: main.cpp pt.cpp
+	g++ -lglut -lGL -lGLU main.cpp pt.cpp -o P1
