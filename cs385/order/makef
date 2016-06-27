@@ -1,0 +1,2 @@
+orderS: orderSearcher.cpp strand.h
+	g++ -pthread orderSearcher.cpp -o orderSearcher

@@ -1,0 +1,41 @@
+Project: FindIt      |
+Author : Shane Lopez |   **********************************************************
+----------------------   *     ______  _____  __   __  _____    _____   _____     *
+	                 *    /  ___/ |_   _| | \  | | |  _ \  |_   _| |_   _|    *
+	                 *    | /__     | |   |  \ | | | | | |   | |     | |      *
+		         *    | __/    _| |_  | |\\| | | |_| |  _| |_    | |      *
+			 *    |_|     |_____| |_| \__| |____/  |_____|   |_|      *
+			 *                                                        *
+			 **********************************************************
+
+To Build
+---------
+	$ make -f makef
+To Run
+---------
+	$ ./findit [option 1] [option 2] [option 3] [option 4]
+
+* Items in brackets are optional
+
+* <Options>
+    -sum , gives verbose output 
+    -acc , displays last access times of files
+    -lg  , searches for largest file
+    -sm  , searches for smallest file
+    -td  , yields graphical representation of directory structure (incomplete)
+    -sz  , displays size of files
+
+Summary
+---------
+findit will parse entered options and prompt the user for a 
+pattern to find, which it will then search for starting from 
+the location findit is executed. Depending on the options 
+entered by the user, findit will also yield various factoids 
+about the files it encounters. In the absence of specified
+options, output will be minimal. Following it's descent into
+the directory structure, findit will report all files 
+containing the user-specified pattern, as well as any 
+other specified data.
+
+* Note that findit takes simple input, and all options are 
+  implicitly &'d

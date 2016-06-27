@@ -1,0 +1,64 @@
+Project: Finding Order In Chaos  |
+Author: Shane Lopez              |
+---------------------------------+
+
+Files Included
+----------------------------------*
+	orderSearcher.cpp
+	strand.h
+	makef
+	light_drops.raw
+	rmall
+	HW4_Report.odt
+	readme <-*this file*
+
+Brief Summary
+----------------------------------*
+	To compile:
+	-----------
+		$ make -f makef
+	
+	To run:
+	-------
+		$ ./orderSearcher fileName nThreads [gspeed]
+	
+		* try using light_drops.raw (included!) as fileName...
+		* [gspeed] options: -s (slow), -m (medium), 
+				    -f (fast), -i(instant)
+	
+	Objective:
+	----------	
+		* orderSearcher scans each line of an input 
+		  image file and graphs the values of lines
+		  better than the curent best with regards 
+		  to a given evaluation criteria; presently,
+		  only standar deviation is used, and the
+		  smaller the deviation, the "better" (order)
+	
+	Suggestions:
+	------------
+		* pipe output into less, i.e.
+
+			$ ./orderSearcher fileName nThreads [gspeed] | less
+		
+		* if you want to stop before finishing, 					
+		| you may have latent resources
+		|
+		V
+	A word about rmall:
+	-------------------
+		* rmall is a simple script posted freely on stackOverflow, 
+		  credited to user neverMind
+		* When run, it erases all ipc resources in use by the user, 
+		  so be careful!
+	
+		* If not executable:
+		
+			$ chmod rmall 755
+		
+		* To run:
+		
+			$ ./rmall
+	
+	
+	

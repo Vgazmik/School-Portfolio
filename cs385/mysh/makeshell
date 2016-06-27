@@ -1,0 +1,6 @@
+shane_shell: main.o mysh.o
+	g++ main.o mysh.o -o mysh; rm *.o
+main.o: main.cpp mysh.h
+	g++ -Wall -c main.cpp
+mysh.o: mysh.cpp mysh.h
+	g++ -Wall -c mysh.cpp

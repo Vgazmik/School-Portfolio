@@ -1,0 +1,2 @@
+find: findIt.cpp
+	g++ findIt.cpp -o findIt

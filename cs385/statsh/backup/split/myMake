@@ -1,0 +1,6 @@
+shell: main.o func.o
+	g++ -o splitStat main.o func.o; rm *.o
+func.o: func.cpp gen.h
+	g++ -Wall -c func.cpp
+main.o: main.cpp gen.h
+	g++ -Wall -c main.cpp

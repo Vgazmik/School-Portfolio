@@ -1,0 +1,4 @@
+#!/bin/bash
+#semrm command
+ME='whoami'
+ipcs -s | grep $ME | awk ' { print $2 } ' | xargs ipcrm sem

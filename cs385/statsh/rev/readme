@@ -1,0 +1,36 @@
+  slopezCS385HW1.zip   .
+---------------------- .
+readme (this file)     .	________  ___   __   ___  ______  __  __
+mysh.cpp               .        \   ____\_| |_ /  \ _| |_ \  ___\ ||__||
+mysh.h                 .      ___\____  \_   _||[]||_   _|_\___ \ | __ | 
+main.cpp               .      \__________\|_|  |/\|  |_| \_______\|_||_|
+makeshell              .
+........................			Shane Lopez
+
+To compile:
+
+$ make -f makeshell
+
+To run:
+
+$ ./mysh
+
+Overview
+----------
+This shell takes in commands from user input and executes them. Unfortunately 
+commands using the '<' and '>' operators have not been made functional, however any valid combination of piped commands may be executed. This shell can also 
+traverse the directory structure by means of the 'cd' command, and for reasons
+of aesthetics the prompt has been set to the current path followed by '$$'.
+If the user enters the command 'stats', all previously executed commands will belisted along with their execution times.
+
+Typical Input Examples
+---------------
+ls 
+ls -1
+ls -1 -a
+ls | less
+ls | grep ma | sort | tail
+pwd | grep home 
+cd ..
+cd /home
+
