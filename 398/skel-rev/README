@@ -1,0 +1,103 @@
+@Author: Shane Lopez (Vgazmik)  |
+@Project: Skel                  |
+---------------------------------
+
+Summary
+-----------
+Skel is a developing tool (and pseudo language) for 
+making quick program prototypes. By tweaking a text file,
+your program prototype may be adjusted. Examples follow.
+
+
+Build It!
+-----------
+To compile the Skel executable, run:
+
+	$ make
+
+
+Scrib!
+-----------
+Open up your favorite text editor, write a few lines
+of Skel, according to these guidelines (more to come in the future):
+
+	Library Includes
+	----------------
+	* Library includes may be written anywhere in the Skel code and 
+	  come in two flavors, standard and custom. For example, 
+	
+		#include <stdio.h> vs. #include "custom_header.h"
+	  
+	  Standard library includes take the form:
+			
+		#: library_name
+	  	
+	  Custom includes look like:
+			
+		!: library_name 
+
+	Function Declarations
+	---------------------
+	* Function declarations also come in two flavors, extended and 
+	  abbreviated; while both are legal, the extended form is intended
+	  for future additions to Skel, and so it would be wise (and space-saving)
+	  to stick to the abbreviated form. 
+
+	  Extended declarations take the form:
+
+	  	@: function_name , function_type , ( function_parameters ):
+			...any number of lines...
+		@!
+	  
+	  Abbreviated declarations are very similar and take the form:
+
+		@: function_name, function_type, ( function_parameters ):;
+	  
+	A word on variables...
+	----------------------
+	When specifying parameters for a function, write them as such:
+		
+		var_type var_name
+
+	Where var_type can be:
+
+		%i for int
+		%f for float
+		%d for double
+		%c for char
+	
+	One last thing...
+	-----------------
+	In order to save typing on the part of the user, it is not necesarry 
+	to declare a main function within your Skel code, as a default will be
+	provided. Since Skel is mainly intended for generating program skeletons,
+	it leaves the "fleshing" to you!
+
+
+Launch It!
+-----------
+	$ ./skel filename
+
+Included along with the source for Skel is a
+file called "scrib". Try Skel'ing it to see 
+what it produces, and compare the Skel code 
+with the generated "outline.c".
+
+
+Success
+---------
+Successful prototype creation is signalled
+by a friendly "Hello, Master!", written into
+the default main function. By default, your
+skeleton file will be written as "outline.c"
+and your executable will be called "proto".
+
+
+Plug In!
+---------
+Go ahead, give it a whirl, make suggestions, 
+peep the source code, help add features, or 
+just use it to save a few minutes, and if 
+you're not fully satisfied, run:
+	
+	$ make clean

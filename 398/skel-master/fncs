@@ -1,0 +1,3 @@
+FNCS:
+ char* tos(char* msg)
+ int main(int argc, char** argv)

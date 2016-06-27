@@ -1,0 +1,64 @@
+@Author: Shane Lopez (Vgazmik)  |
+@Project: Bare Bones            |
+---------------------------------
+
+Summary
+-----------
+Skel is a developing tool for making quick program 
+prototypes. By tweaking specified files, a prototype
+may be adjusted. Examples follow.
+
+Build It!
+-----------
+	$ make
+
+Launch It!
+-----------
+	$ ./skel
+
+About Those Files...
+---------------------
+Default CON_FILE: conf (included)
+Default LIB_FILE: libs (included)
+Default FN_FILE:  fncs (included)
+
+CON_FILE specifies which files define function headers and libraries
+
+LIB_FILE specifies which libraries to include in the prototype*
+         |
+         *-> within LIB_FILE, separate libraries as such:
+	
+	     STD:
+	      stdio.h
+	      stdlib.h
+	     CST:
+	      helper.h
+	      custom_header.h
+
+	     ~STD specifies standard c libraries
+	     ~CST specifies custom c header files
+
+FN_FILE specifies function headers*
+        |
+        *-> within FN_FILE, declare as such:
+	 
+	    FNCS:
+	     char* tos(char* msg)
+	     double blarg()
+	     int main(int argc, char** argv)
+
+Success
+---------
+Successful prototype creation is signaled 
+by a friendly "Hello, Master!", written into
+the default main function. By default, your
+skeleton file will be written as "outline.c"
+
+Plug In!
+---------
+Go ahead, give it a whirl, make suggestions, 
+peep the source code, help add features, or 
+just use it to save a few minutes, and if 
+you're not fully satisfied, run:
+	
+	$ make clean

@@ -1,0 +1,4 @@
+@ returnFour,%i,( ):;
+@ gimmeFive,%d,(%i a, %d b, %c c):;
+#: stdio.h
+!: custom_header.h

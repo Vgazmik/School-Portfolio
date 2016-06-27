@@ -1,0 +1,6 @@
+@ blah,nil,(%i somestuff, %f somefloat):;
+#: stdio.h
+@ foo,nil,(%i a, %i f):;
+!: custom_header.h
+@ apractice,%d,(%i a):;
+@ some_thing,%i,( ):;
